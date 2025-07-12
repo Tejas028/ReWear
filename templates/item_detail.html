@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - ReWear{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <!-- Image Gallery -->
+        <div class="relative">
+            {% if item.images %}
+                {% set images = item.images|from_json %}
+                {% if images %}
+                    <div class="relative h-96">
+                        <img src="{{ url_for('static', filename=images[0]) }}" alt="{{ item.title }}" 
+                             class="w-full h-full object-cover" id="main-image">
+                        
+                        {% if images|length > 1 %}
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <div class="flex space-x-2 overflow-x-auto">
+                                {% for image in images %}
+                                <button onclick="changeImage('{{ url_for('static', filename=image) }}')" 
+                                        class="flex-shrink-0 w-16 h-16 border-2 border-white rounded-md overflow-hidden">
+                                    <img src="{{ url_for('static', filename=image) }}" alt="{{ item.title }}" 
+                                         class="w-full h-full object-cover">
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="h-96 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-tshirt text-6xl text-gray-400"></i>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="h-96 bg-gray-200 flex items-center justify-center">
+                    <i class="fas fa-tshirt text-6xl text-gray-400"></i>
+                </div>
+            {% endif %}
+            
+            <!-- Availability Badge -->
+            <div class="absolute top-4 right-4">
+                {% if item.is_available %}
+                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">Available</span>
+                {% else %}
+                    <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">Not Available</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Item Details -->
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ item.title }}</h1>
+                    <p class="text-gray-600">{{ item.description }}</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold text-primary">{{ item.points_value }} pts</div>
+                    <div class="text-sm text-gray-500">Points Value</div>
+                </div>
+            </div>
+
+            <!-- Item Tags -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <span class="bg-primary text-white px-3 py-1 rounded-full text-sm">{{ item.category }}</span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">{{ item.item_type }}</span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">Size: {{ item.size }}</span>
+                <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">{{ item.condition }}</span>
+                {% if item.tags %}
+                    {% for tag in item.tags.split(',') %}
+                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">{{ tag.strip() }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Owner Info -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <div class="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-gray-900">Listed by {{ item.owner.name }}</h3>
+                        <p class="text-sm text-gray-500">Member since {{ item.owner.created_at.strftime('%B %Y') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            {% if current_user.is_authenticated and item.is_available %}
+                {% if current_user.id != item.user_id %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Swap Request Form -->
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Request Swap</h3>
+                            <form method="POST" action="{{ url_for('swap_request') }}">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <div class="mb-3">
+                                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                                    <textarea id="message" name="message" rows="3" 
+                                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                                              placeholder="Tell the owner why you'd like to swap..."></textarea>
+                                </div>
+                                <button type="submit" 
+                                        class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors duration-200">
+                                    <i class="fas fa-exchange-alt mr-2"></i>Request Swap
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Points Redemption -->
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Redeem with Points</h3>
+                            <div class="mb-3">
+                                <p class="text-sm text-gray-600 mb-2">Your points: <span class="font-medium">{{ current_user.points }}</span></p>
+                                <p class="text-sm text-gray-600">Required points: <span class="font-medium">{{ item.points_value }}</span></p>
+                            </div>
+                            {% if current_user.points >= item.points_value %}
+                                <form method="POST" action="{{ url_for('redeem_points') }}">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <button type="submit" 
+                                            class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition-colors duration-200">
+                                        <i class="fas fa-coins mr-2"></i>Redeem Now
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button disabled 
+                                        class="w-full bg-gray-300 text-gray-500 py-2 px-4 rounded-md cursor-not-allowed">
+                                    <i class="fas fa-lock mr-2"></i>Insufficient Points
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                        <i class="fas fa-info-circle text-yellow-600 text-2xl mb-2"></i>
+                        <p class="text-yellow-800">This is your own item. You cannot swap or redeem it.</p>
+                    </div>
+                {% endif %}
+            {% elif not current_user.is_authenticated %}
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <i class="fas fa-sign-in-alt text-blue-600 text-2xl mb-2"></i>
+                    <p class="text-blue-800 mb-3">Sign in to swap or redeem this item</p>
+                    <div class="space-x-4">
+                        <a href="{{ url_for('login') }}" 
+                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary transition-colors duration-200">
+                            Sign In
+                        </a>
+                        <a href="{{ url_for('register') }}" 
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                            Create Account
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="bg-red-50 rounded-lg p-4 text-center">
+                    <i class="fas fa-times-circle text-red-600 text-2xl mb-2"></i>
+                    <p class="text-red-800">This item is no longer available for swapping or redemption.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back to Browse -->
+    <div class="mt-6 text-center">
+        <a href="{{ url_for('browse') }}" 
+           class="inline-flex items-center text-primary hover:text-secondary transition-colors duration-200">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Browse
+        </a>
+    </div>
+</div>
+
+<script>
+function changeImage(src) {
+    document.getElementById('main-image').src = src;
+}
+</script>
+{% endblock %} 
