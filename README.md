@@ -1,55 +1,72 @@
-# ReWear - Community Clothing Exchange
+# 👕 ReWear – Community Clothing Exchange
 
-A web-based platform that enables users to exchange unused clothing through direct swaps or a point-based redemption system. The goal is to promote sustainable fashion and reduce textile waste by encouraging users to reuse wearable garments instead of discarding them.
+ReWear is a web-based platform that enables people to **exchange unused clothing** through **direct swaps** or a **point-based redemption system**. Our mission is to promote **sustainable fashion** and reduce **textile waste** by helping users give their clothes a second life.
 
-## Features
+---
 
-### User Authentication
-- Email/password signup and login
-- Secure password hashing
-- User session management
+## 🌱 Why ReWear?
 
-### Landing Page
-- Platform introduction and mission
+Every year, millions of tons of clothing end up in landfills. ReWear empowers users to:
+- ♻️ Give garments a new home
+- 💰 Save money while refreshing their wardrobe
+- 🌍 Make eco-friendly fashion choices
+
+---
+
+## 🚀 Features at a Glance
+
+### 👤 User Authentication
+- Secure signup/login via email & password
+- Passwords hashed using `Werkzeug`
+- Session management via `Flask-Login`
+
+### 🏠 Landing Page
+- Mission-driven introduction
 - Featured items carousel
-- Calls-to-action: "Start Swapping", "Browse Items", "List an Item"
+- Clear CTAs: **Start Swapping**, **Browse Items**, **List an Item**
 
-### User Dashboard
-- Profile details and points balance
-- Uploaded items overview
-- Ongoing and completed swaps list
-- Pending swap requests management
+### 👛 User Dashboard
+- View profile and points balance
+- See listed items and swap history
+- Manage incoming/outgoing swap requests
 
-### Item Management
-- **Browse Items**: Search and filter by category, size, condition
-- **Item Detail Page**: Image gallery, full description, swap/redeem options
-- **Add New Item**: Upload images, enter details (title, description, category, type, size, condition, tags)
+### 📦 Item Management
+- **Browse Items**: Filter by category, size, condition
+- **Item Detail View**: Photos, description, redemption/swap options
+- **List Item**: Upload images and provide item details
 
-### Swap System
-- **Direct Swaps**: Request swaps with other users
-- **Points Redemption**: Redeem items using earned points
-- **Swap Management**: Accept/reject swap requests
+### 🔁 Swap & Points System
+- Request **direct swaps** with other users
+- Redeem clothing using **earned points**
+- Manage swap requests (accept/reject)
 
-### Admin Panel
-- Moderate and approve/reject item listings
-- Remove inappropriate or spam items
-- View all items and user statistics
-- Lightweight admin panel for oversight
+### 🛡️ Admin Panel
+- Moderate item listings (approve/reject)
+- Remove inappropriate content
+- View platform-wide user & item stats
 
-## Technology Stack
+---
 
-- **Backend**: Python Flask
-- **Database**: SQLite (easily switchable to PostgreSQL/MySQL)
-- **Frontend**: HTML5, Tailwind CSS
-- **Authentication**: Flask-Login
-- **File Upload**: Werkzeug
-- **Icons**: Font Awesome
+## 🛠️ Tech Stack
 
-## Installation & Setup
+| Layer       | Tech Used                       |
+|-------------|----------------------------------|
+| Backend     | Python Flask                    |
+| Frontend    | HTML5, Tailwind CSS             |
+| Database    | SQLite (easy to switch to PostgreSQL/MySQL) |
+| Auth        | Flask-Login                     |
+| File Upload | Werkzeug                        |
+| Icons       | Font Awesome                    |
 
-### Prerequisites
-- Python 3.7 or higher
-- pip (Python package installer)
+---
+
+## ⚙️ Getting Started
+
+### 🔗 Clone the Repository
+
+```bash
+git clone https://github.com/your-username/rewear.git
+cd rewear
 
 ### Step 1: Clone the Repository
 ```bash
@@ -81,58 +98,77 @@ An admin account is automatically created with the following credentials:
 - **Email**: admin@rewear.com
 - **Password**: admin123
 
-## Database Schema
+## 🗄️ Database Schema Overview
 
-### Users Table
-- `id`: Primary key
-- `email`: Unique email address
-- `password_hash`: Hashed password
-- `name`: User's full name
-- `points`: Available points balance
-- `is_admin`: Admin privileges flag
-- `created_at`: Account creation timestamp
+### 👤 `Users` Table
+Stores user account and profile data.
 
-### Items Table
-- `id`: Primary key
-- `title`: Item title
-- `description`: Detailed description
-- `category`: Item category (Tops, Bottoms, Dresses, etc.)
-- `item_type`: Specific type (Shirt, Jeans, etc.)
-- `size`: Item size
-- `condition`: Item condition (New, Good, Fair, etc.)
-- `tags`: Comma-separated tags
-- `images`: JSON array of image paths
-- `points_value`: Points required for redemption
-- `is_available`: Availability status
-- `is_approved`: Admin approval status
-- `user_id`: Foreign key to Users table
-- `created_at`: Listing creation timestamp
+| Field         | Description                       |
+|---------------|-----------------------------------|
+| `id`          | Primary key                       |
+| `email`       | Unique email address              |
+| `password_hash` | Securely hashed password        |
+| `name`        | Full name of the user             |
+| `points`      | User’s current points balance     |
+| `is_admin`    | Boolean flag for admin privileges |
+| `created_at`  | Timestamp of account creation     |
 
-### SwapRequests Table
-- `id`: Primary key
-- `requester_id`: User requesting the swap
-- `item_owner_id`: Owner of the item
-- `item_id`: Item being swapped
-- `status`: Request status (pending, accepted, rejected, completed)
-- `message`: Optional message from requester
-- `created_at`: Request creation timestamp
+---
 
-## Usage Guide
+### 👕 `Items` Table
+Details of clothing items listed by users.
 
-### For Regular Users
+| Field         | Description                                  |
+|---------------|----------------------------------------------|
+| `id`          | Primary key                                  |
+| `title`       | Item name/title                              |
+| `description` | Full description of the item                 |
+| `category`    | General category (Tops, Bottoms, etc.)       |
+| `item_type`   | Specific type (e.g., Shirt, Jeans)           |
+| `size`        | Item size                                    |
+| `condition`   | Condition (New, Good, Fair, etc.)            |
+| `tags`        | Comma-separated descriptive tags             |
+| `images`      | JSON array of image paths                    |
+| `points_value`| Points required for redemption               |
+| `is_available`| Item availability status                     |
+| `is_approved` | Admin approval status                        |
+| `user_id`     | Foreign key referencing the `Users` table    |
+| `created_at`  | Timestamp of item listing                    |
 
-1. **Registration**: Create an account to get started with 100 points
-2. **Browse Items**: Explore available items by category or search
-3. **List Items**: Upload photos and details of clothes you want to share
-4. **Swap or Redeem**: Request direct swaps or redeem items with points
-5. **Manage Requests**: Accept or reject incoming swap requests
+---
 
-### For Admins
+### 🔁 `SwapRequests` Table
+Handles swap and redemption request tracking.
 
-1. **Access Admin Panel**: Login with admin credentials
-2. **Review Items**: Approve or reject pending item listings
-3. **Moderate Content**: Remove inappropriate items
-4. **Monitor Activity**: View user and item statistics
+| Field           | Description                                  |
+|------------------|----------------------------------------------|
+| `id`            | Primary key                                  |
+| `requester_id`  | User requesting the swap                     |
+| `item_owner_id` | Owner of the requested item                  |
+| `item_id`       | The item involved in the swap                |
+| `status`        | Swap status (`pending`, `accepted`, `rejected`, `completed`) |
+| `message`       | Optional message from the requester          |
+| `created_at`    | Timestamp of request creation                |
+
+---
+
+## 🧑‍💻 Usage Guide
+
+### 🔄 For Regular Users
+1. **Register** for an account — start with **100 free points**
+2. **Browse items** based on category, size, or condition
+3. **List clothes** you no longer wear to earn points
+4. **Swap directly** with other users or **redeem items** using points
+5. **Manage your dashboard** to track requests and your point balance
+
+---
+
+### 🔐 For Admins
+1. Login with admin credentials at `/login`
+2. Access the **Admin Panel**
+3. Approve or reject pending item listings
+4. Remove flagged or inappropriate content
+5. Monitor user and item activity across the platform
 
 ## File Structure
 
@@ -179,21 +215,9 @@ The application uses SQLite by default. To use a different database:
 - Admin-only access to moderation features
 - Input validation and sanitization
 
-## Contributing
+## Screenshots
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support or questions, please open an issue in the repository or contact the development team.
 
 ---
 
