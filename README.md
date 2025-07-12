@@ -218,13 +218,17 @@ The application uses SQLite by default. To use a different database:
 
 ## Screenshots
 
+User Interface
 <img width="1900" height="913" alt="image" src="https://github.com/user-attachments/assets/310f76a5-2db9-40c6-9fb0-a79c94c3d8c1" />
 <img width="1919" height="911" alt="image" src="https://github.com/user-attachments/assets/7ef3c7b0-29b9-4a51-8825-470465236e48" />
 <img width="1919" height="905" alt="image" src="https://github.com/user-attachments/assets/3fd0ebe5-29a9-4ccf-a50b-cac52c3ae5cb" />
 <img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/496e4415-b209-4b99-818d-fc0a9b727189" />
 
+Admin Panel
 
+<img width="1919" height="907" alt="Screenshot 2025-07-12 173748" src="https://github.com/user-attachments/assets/33cfdf56-1e19-4999-a84e-8e70c95c60c9" />
 
+<img width="1919" height="909" alt="image" src="https://github.com/user-attachments/assets/044b2828-313c-47a0-9306-2d6967c551c0" />
 
 ---
 
